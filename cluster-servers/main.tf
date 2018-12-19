@@ -109,8 +109,8 @@ resource "aws_security_group" "ec2_security_group" {
     vpc_id = "${aws_vpc.vpc.id}"
     
     ingress { # HTTP port to be connected to ELB
-        from_port   = "${var.server_http_port}"
-        to_port     = "${var.server_http_port}"
+        from_port   = "${var.ec2_http_port}"
+        to_port     = "${var.ec2_http_port}"
         protocol    = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
         #security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
@@ -166,7 +166,7 @@ resource "aws_elb" "load_balancer" {
     listener {
         lb_port           = 80
         lb_protocol       = "http"
-        instance_port     = "${var.server_http_port}"
+        instance_port     = "${var.ec2_http_port}"
         instance_protocol = "http"
     }
     
@@ -175,7 +175,7 @@ resource "aws_elb" "load_balancer" {
         unhealthy_threshold = 2
         timeout             = 3
         interval            = 30
-        target              = "HTTP:${var.server_http_port}/"
+        target              = "HTTP:${var.ec2_http_port}/"
     }
     tags {
         Name = "${var.this}-elb"
